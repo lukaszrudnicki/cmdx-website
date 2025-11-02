@@ -1,0 +1,131 @@
+---
+interface Props {
+  href?: string;
+  title: string;
+  description?: string;
+  image?: string;
+  imageAlt?: string;
+  tags?: string[];
+  date?: string;
+  featured?: boolean;
+  category?: string;
+  categoryType?: 'blog' | 'portfolio';
+  class?: string;
+}
+
+const {
+  href,
+  title,
+  description,
+  image,
+  imageAlt,
+  tags = [],
+  date,
+  featured = false,
+  category,
+  categoryType = 'blog',
+  class: className = ''
+} = Astro.props;
+
+const categorySlug = category ? category.toLowerCase().replace(/\s+/g, '-') : null;
+const categoryUrl = categorySlug ? `/${categoryType}/kategoria/${categorySlug}` : null;
+
+const cardClasses = `
+  group relative bg-white dark:bg-gray-800 rounded-2xl overflow-hidden
+  shadow-lg hover:shadow-2xl transition-all duration-300
+  hover:-translate-y-2 ${featured ? 'ring-2 ring-purple-500' : ''} ${className}
+`;
+---
+
+<article class={cardClasses}>
+  {href ? (
+    <a href={href} class="block">
+      {image && (
+        <div class="relative overflow-hidden aspect-video bg-gradient-to-br from-purple-100 to-pink-100 dark:from-purple-900/20 dark:to-pink-900/20">
+          <img
+            src={image}
+            alt={imageAlt || title}
+            class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+            loading="lazy"
+          />
+          {featured && (
+            <div class="absolute top-4 right-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white px-4 py-1 rounded-full text-sm font-semibold shadow-lg">
+              Wyróżnione
+            </div>
+          )}
+        </div>
+      )}
+      <div class="p-6">
+        <div class="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 mb-2 flex-wrap">
+          {date && <time>{date}</time>}
+          {category && categoryUrl && (
+            <>
+              {date && <span>•</span>}
+              <a
+                href={categoryUrl}
+                class="bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 px-2 py-0.5 rounded font-medium hover:bg-purple-200 dark:hover:bg-purple-900/50 transition-colors"
+                onclick="event.stopPropagation()"
+              >
+                {category}
+              </a>
+            </>
+          )}
+        </div>
+        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
+          {title}
+        </h3>
+        {description && (
+          <p class="text-gray-600 dark:text-gray-300 mb-4 line-clamp-3">
+            {description}
+          </p>
+        )}
+        {tags.length > 0 && (
+          <div class="flex flex-wrap gap-2">
+            {tags.map((tag) => (
+              <span class="px-3 py-1 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded-full text-sm font-medium">
+                {tag}
+              </span>
+            ))}
+          </div>
+        )}
+      </div>
+    </a>
+  ) : (
+    <>
+      {image && (
+        <div class="relative overflow-hidden aspect-video bg-gradient-to-br from-purple-100 to-pink-100 dark:from-purple-900/20 dark:to-pink-900/20">
+          <img
+            src={image}
+            alt={imageAlt || title}
+            class="w-full h-full object-cover"
+            loading="lazy"
+          />
+        </div>
+      )}
+      <div class="p-6">
+        {date && (
+          <time class="text-sm text-gray-500 dark:text-gray-400 block mb-2">
+            {date}
+          </time>
+        )}
+        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">
+          {title}
+        </h3>
+        {description && (
+          <p class="text-gray-600 dark:text-gray-300 mb-4">
+            {description}
+          </p>
+        )}
+        {tags.length > 0 && (
+          <div class="flex flex-wrap gap-2">
+            {tags.map((tag) => (
+              <span class="px-3 py-1 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded-full text-sm">
+                {tag}
+              </span>
+            ))}
+          </div>
+        )}
+      </div>
+    </>
+  )}
+</article>

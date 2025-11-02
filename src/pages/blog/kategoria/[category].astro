@@ -1,0 +1,75 @@
+---
+import { getCollection } from 'astro:content';
+import SEOLayout from '../../../layouts/SEOLayout.astro';
+import Nav from '../../../components/Nav.astro';
+import Section from '../../../components/Section.astro';
+import Card from '../../../components/Card.astro';
+import Footer from '../../../components/Footer.astro';
+
+export async function getStaticPaths() {
+  const blogPosts = await getCollection('blog', ({ data }) => data.draft !== true);
+
+  // Zbierz wszystkie unikalne kategorie
+  const categories = [...new Set(blogPosts.map(post => post.data.category).filter(Boolean))];
+
+  return categories.map(category => {
+    const filteredPosts = blogPosts.filter(post => post.data.category === category);
+    return {
+      params: { category: category.toLowerCase().replace(/\s+/g, '-') },
+      props: { category, posts: filteredPosts }
+    };
+  });
+}
+
+const { category, posts } = Astro.props;
+
+const sortedPosts = posts.sort((a, b) =>
+  b.data.publishDate.getTime() - a.data.publishDate.getTime()
+);
+---
+
+<SEOLayout
+  title={`${category} - Blog CMDX`}
+  description={`Wszystkie wpisy z kategorii ${category}`}
+  keywords={[category.toLowerCase(), 'blog', 'artykuły']}
+>
+  <Nav />
+
+  <Section
+    title={category}
+    subtitle={`${posts.length} ${posts.length === 1 ? 'wpis' : 'wpisów'} w tej kategorii`}
+    background="white"
+  >
+    <div class="mb-8">
+      <a href="/blog" class="text-purple-600 hover:text-purple-700 font-medium">
+        ← Powrót do wszystkich wpisów
+      </a>
+    </div>
+
+    {sortedPosts.length === 0 ? (
+      <div class="text-center py-12 text-gray-500">
+        Brak wpisów w tej kategorii.
+      </div>
+    ) : (
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {sortedPosts.map((post) => (
+          <Card
+            href={`/blog/${post.slug}`}
+            title={post.data.title}
+            description={post.data.description}
+            image="https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=800&h=600&fit=crop"
+            imageAlt={post.data.title}
+            date={post.data.publishDate.toLocaleDateString('pl-PL', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric'
+            })}
+            tags={post.data.tags.slice(0, 2)}
+          />
+        ))}
+      </div>
+    )}
+  </Section>
+
+  <Footer />
+</SEOLayout>

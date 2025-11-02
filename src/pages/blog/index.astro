@@ -1,0 +1,58 @@
+---
+import { getCollection } from 'astro:content';
+import SEOLayout from '../../layouts/SEOLayout.astro';
+import Nav from '../../components/Nav.astro';
+import Section from '../../components/Section.astro';
+import Card from '../../components/Card.astro';
+import Footer from '../../components/Footer.astro';
+
+const blogPosts = await getCollection('blog', ({ data }) => {
+  return data.draft !== true;
+});
+
+const sortedPosts = blogPosts.sort((a, b) => {
+  return b.data.publishDate.getTime() - a.data.publishDate.getTime();
+});
+---
+
+<SEOLayout
+  title="Blog - CMDX"
+  description="Poznaj najnowsze artykuły, tutoriale i inspiracje dotyczące grafiki, projektowania i designu."
+  keywords={['blog', 'artykuły', 'design', 'grafika', 'portfolio']}
+>
+  <Nav />
+
+  <Section
+    title="Blog"
+    subtitle="Artykuły, tutoriale i inspiracje ze świata designu"
+    background="white"
+  >
+    {sortedPosts.length === 0 ? (
+      <div class="text-center py-12 text-gray-500">
+        Nie ma jeszcze żadnych wpisów na blogu.
+      </div>
+    ) : (
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {sortedPosts.map((post) => (
+          <Card
+            href={`/blog/${post.slug}`}
+            title={post.data.title}
+            description={post.data.description}
+            image="https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=800&h=600&fit=crop"
+            imageAlt={post.data.title}
+            date={post.data.publishDate.toLocaleDateString('pl-PL', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric'
+            })}
+            category={post.data.category}
+            categoryType="blog"
+            tags={post.data.tags.slice(0, 2)}
+          />
+        ))}
+      </div>
+    )}
+  </Section>
+
+  <Footer />
+</SEOLayout>

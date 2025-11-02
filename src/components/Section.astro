@@ -1,0 +1,41 @@
+---
+interface Props {
+  title?: string;
+  subtitle?: string;
+  class?: string;
+  background?: 'white' | 'gray' | 'gradient';
+}
+
+const {
+  title,
+  subtitle,
+  class: className = '',
+  background = 'white'
+} = Astro.props;
+
+const backgroundClasses = {
+  white: 'bg-white dark:bg-gray-900',
+  gray: 'bg-gray-50 dark:bg-gray-800/50',
+  gradient: 'bg-gradient-to-br from-purple-50 to-pink-50 dark:from-gray-900 dark:to-purple-900/20'
+};
+---
+
+<section class={`py-16 lg:py-24 ${backgroundClasses[background]} ${className}`}>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    {(title || subtitle) && (
+      <div class="text-center mb-12 lg:mb-16">
+        {title && (
+          <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+            {title}
+          </h2>
+        )}
+        {subtitle && (
+          <p class="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+            {subtitle}
+          </p>
+        )}
+      </div>
+    )}
+    <slot />
+  </div>
+</section>

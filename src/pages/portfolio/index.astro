@@ -1,0 +1,52 @@
+---
+import { getCollection } from 'astro:content';
+import SEOLayout from '../../layouts/SEOLayout.astro';
+import Nav from '../../components/Nav.astro';
+import Section from '../../components/Section.astro';
+import Card from '../../components/Card.astro';
+import Footer from '../../components/Footer.astro';
+
+const portfolioItems = await getCollection('portfolio');
+
+const sortedItems = portfolioItems.sort((a, b) => {
+  return b.data.publishDate.getTime() - a.data.publishDate.getTime();
+});
+---
+
+<SEOLayout
+  title="Portfolio - CMDX"
+  description="Zobacz moje najlepsze prace z zakresu grafiki, projektowania i designu. Projekty dla klientów i prace własne."
+  keywords={['portfolio', 'projekty', 'design', 'grafika', 'realizacje']}
+>
+  <Nav />
+
+  <Section
+    title="Portfolio"
+    subtitle="Moje najlepsze prace i projekty"
+    background="white"
+  >
+    {sortedItems.length === 0 ? (
+      <div class="text-center py-12 text-gray-500">
+        Nie ma jeszcze żadnych projektów w portfolio.
+      </div>
+    ) : (
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {sortedItems.map((item) => (
+          <Card
+            href={`/portfolio/${item.slug}`}
+            title={item.data.title}
+            description={item.data.description}
+            image="https://images.unsplash.com/photo-1561070791-2526d30994b5?w=800&h=600&fit=crop"
+            imageAlt={item.data.title}
+            tags={item.data.tags.slice(0, 3)}
+            featured={item.data.featured}
+            category={item.data.category}
+            categoryType="portfolio"
+          />
+        ))}
+      </div>
+    )}
+  </Section>
+
+  <Footer />
+</SEOLayout>

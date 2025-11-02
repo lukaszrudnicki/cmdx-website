@@ -1,0 +1,65 @@
+---
+import { getCollection } from 'astro:content';
+import SEOLayout from '../layouts/SEOLayout.astro';
+
+export async function getStaticPaths() {
+  const pages = await getCollection('pages');
+
+  return pages.map((page) => ({
+    params: { slug: page.slug },
+    props: { page },
+  }));
+}
+
+const { page } = Astro.props;
+const { Content } = await page.render();
+---
+
+<SEOLayout
+  title={page.data.title}
+  description={page.data.description}
+  keywords={page.data.keywords}
+  ogImage={page.data.ogImage}
+  canonical={page.data.canonical}
+  noindex={page.data.noindex}
+  nofollow={page.data.nofollow}
+  author={page.data.author}
+  publishDate={page.data.publishDate}
+>
+  <article>
+    <header>
+      <h1>{page.data.title}</h1>
+      {page.data.publishDate && (
+        <time datetime={page.data.publishDate.toISOString()}>
+          {page.data.publishDate.toLocaleDateString('pl-PL', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+          })}
+        </time>
+      )}
+    </header>
+
+    <Content />
+  </article>
+</SEOLayout>
+
+<style>
+  article {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  header {
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #eee;
+  }
+
+  time {
+    display: block;
+    margin-top: 0.5rem;
+    color: #666;
+    font-size: 0.9rem;
+  }
+</style>

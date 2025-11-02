@@ -1,0 +1,263 @@
+---
+import SEOLayout from './SEOLayout.astro';
+import { Image } from 'astro:assets';
+
+interface Props {
+  title: string;
+  description: string;
+  keywords: string[];
+  publishDate: Date;
+  updatedDate?: Date;
+  author?: string;
+  ogImage?: string;
+  coverImage?: ImageMetadata;
+  coverImageAlt?: string;
+  category?: string;
+  tags?: string[];
+  canonical?: string;
+  noindex?: boolean;
+  nofollow?: boolean;
+}
+
+const {
+  title,
+  description,
+  keywords,
+  publishDate,
+  updatedDate,
+  author = 'CMDX',
+  ogImage,
+  coverImage,
+  coverImageAlt,
+  category,
+  tags = [],
+  canonical,
+  noindex = false,
+  nofollow = false,
+} = Astro.props;
+
+const formattedPublishDate = publishDate.toLocaleDateString('pl-PL', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+
+const formattedUpdatedDate = updatedDate?.toLocaleDateString('pl-PL', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+---
+
+<SEOLayout
+  title={title}
+  description={description}
+  keywords={keywords}
+  ogImage={ogImage}
+  canonical={canonical}
+  noindex={noindex}
+  nofollow={nofollow}
+  author={author}
+  publishDate={publishDate}
+>
+  <article class="blog-post">
+    <header class="post-header">
+      <div class="breadcrumb">
+        <a href="/">Strona główna</a> / <a href="/blog">Blog</a>
+      </div>
+
+      <h1>{title}</h1>
+
+      <div class="post-meta">
+        <span class="author">Autor: {author}</span>
+        <span class="separator">•</span>
+        <time datetime={publishDate.toISOString()}>
+          {formattedPublishDate}
+        </time>
+        {updatedDate && (
+          <>
+            <span class="separator">•</span>
+            <span class="updated">
+              Zaktualizowano: <time datetime={updatedDate.toISOString()}>{formattedUpdatedDate}</time>
+            </span>
+          </>
+        )}
+        {category && (
+          <>
+            <span class="separator">•</span>
+            <span class="category">{category}</span>
+          </>
+        )}
+      </div>
+
+      {coverImage && coverImageAlt && (
+        <div class="cover-image">
+          <Image
+            src={coverImage}
+            alt={coverImageAlt}
+            loading="eager"
+            quality={90}
+          />
+        </div>
+      )}
+    </header>
+
+    <div class="post-content">
+      <slot />
+    </div>
+
+    {tags.length > 0 && (
+      <footer class="post-footer">
+        <div class="tags">
+          <strong>Tagi:</strong>
+          {tags.map((tag) => (
+            <span class="tag">{tag}</span>
+          ))}
+        </div>
+      </footer>
+    )}
+
+    <div class="back-link">
+      <a href="/blog">← Powrót do bloga</a>
+    </div>
+  </article>
+</SEOLayout>
+
+<style>
+  .blog-post {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .breadcrumb {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 1rem;
+  }
+
+  .breadcrumb a {
+    color: #0066cc;
+    text-decoration: none;
+  }
+
+  .breadcrumb a:hover {
+    text-decoration: underline;
+  }
+
+  .post-header {
+    margin-bottom: 3rem;
+  }
+
+  .post-header h1 {
+    margin-bottom: 1rem;
+    line-height: 1.2;
+  }
+
+  .post-meta {
+    color: #666;
+    font-size: 0.95rem;
+    margin-bottom: 2rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .separator {
+    color: #ccc;
+  }
+
+  .category {
+    background: #e9ecef;
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    font-weight: 500;
+  }
+
+  .cover-image {
+    margin-top: 2rem;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .cover-image img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .post-content {
+    font-size: 1.1rem;
+    line-height: 1.8;
+  }
+
+  .post-content :global(h2) {
+    margin-top: 3rem;
+    margin-bottom: 1rem;
+  }
+
+  .post-content :global(h3) {
+    margin-top: 2rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .post-content :global(img) {
+    border-radius: 8px;
+    margin: 2rem 0;
+  }
+
+  .post-content :global(blockquote) {
+    border-left: 4px solid #0066cc;
+    padding-left: 1.5rem;
+    margin: 2rem 0;
+    font-style: italic;
+    color: #555;
+  }
+
+  .post-footer {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid #e9ecef;
+  }
+
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+  }
+
+  .tag {
+    background: #f8f9fa;
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    color: #495057;
+    border: 1px solid #dee2e6;
+  }
+
+  .back-link {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid #e9ecef;
+  }
+
+  .back-link a {
+    color: #0066cc;
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  .back-link a:hover {
+    text-decoration: underline;
+  }
+
+  @media (max-width: 768px) {
+    .post-content {
+      font-size: 1rem;
+    }
+
+    .post-meta {
+      font-size: 0.85rem;
+    }
+  }
+</style>

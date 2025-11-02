@@ -1,0 +1,38 @@
+---
+import { getCollection } from 'astro:content';
+import PortfolioLayout from '../../layouts/PortfolioLayout.astro';
+
+export async function getStaticPaths() {
+  const portfolioItems = await getCollection('portfolio');
+
+  return portfolioItems.map((item) => ({
+    params: { slug: item.slug },
+    props: { item },
+  }));
+}
+
+const { item } = Astro.props;
+const { Content } = await item.render();
+---
+
+<PortfolioLayout
+  title={item.data.title}
+  description={item.data.description}
+  keywords={item.data.keywords}
+  publishDate={item.data.publishDate}
+  author={item.data.author}
+  client={item.data.client}
+  projectDate={item.data.projectDate}
+  coverImage={item.data.coverImage}
+  coverImageAlt={item.data.coverImageAlt}
+  gallery={item.data.gallery}
+  category={item.data.category}
+  tags={item.data.tags}
+  projectUrl={item.data.projectUrl}
+  ogImage={item.data.ogImage}
+  canonical={item.data.canonical}
+  noindex={item.data.noindex}
+  nofollow={item.data.nofollow}
+>
+  <Content />
+</PortfolioLayout>
