@@ -9,7 +9,8 @@
       "Bash(taskkill:*)",
       "Bash(pkill:*)",
       "Bash(killall:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$(cat <<''EOF''\nDodano obsługę Vercel i konfigurację strony cmdx.pl\n\n- Zainstalowano @astrojs/vercel adapter\n- Skonfigurowano domenę cmdx.pl w astro.config.mjs\n- Zaktualizowano .gitignore o wpisy Vercel\n- Dodano komponenty i strukturę strony\n- Dodano content collections dla blog i portfolio\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")"
     ],
     "deny": [],
     "ask": []
