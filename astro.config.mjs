@@ -10,8 +10,28 @@ export default defineConfig({
   site: 'https://cmdx.pl',
   adapter: vercel(),
 
+  // Performance optimizations
+  build: {
+    inlineStylesheets: 'auto',
+  },
+
+  // Image optimization
+  image: {
+    service: {
+      entrypoint: 'astro/assets/services/sharp',
+    },
+  },
+
+  // Prefetch for faster navigation
+  prefetch: {
+    prefetchAll: true,
+    defaultStrategy: 'viewport',
+  },
+
   integrations: [
-    tailwind(),
+    tailwind({
+      applyBaseStyles: false, // Don't include Tailwind's base styles to reduce CSS
+    }),
     mdx(),
     sitemap({
       // Exclude any admin or private pages if needed
