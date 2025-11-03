@@ -1,0 +1,15 @@
+# robots.txt for cmdx.pl
+
+# Allow all crawlers
+User-agent: *
+Allow: /
+
+# Disallow admin and private pages (if any)
+Disallow: /admin/
+Disallow: /private/
+
+# Sitemap location
+Sitemap: https://cmdx.pl/sitemap-index.xml
+
+# Crawl-delay (optional, adjust if needed)
+# Crawl-delay: 10
