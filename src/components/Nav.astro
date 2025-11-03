@@ -1,4 +1,7 @@
 ---
+import { Image } from 'astro:assets';
+import logo from '../assets/cmdx - logo.svg';
+
 const navLinks = [
   { href: '/', label: 'Strona główna' },
   { href: '/blog', label: 'Blog' },
@@ -10,11 +13,13 @@ const navLinks = [
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="flex justify-between items-center h-16">
       <!-- Logo -->
-      <a href="/" class="flex items-center space-x-2 group">
-        <div class="w-10 h-10 bg-gradient-to-br from-purple-600 to-pink-600 rounded-full flex items-center justify-center transform group-hover:scale-110 transition-transform">
-          <span class="text-white font-bold text-xl">C</span>
-        </div>
-        <span class="text-xl font-bold text-[#1D1D1F]">CMDX</span>
+      <a href="/" class="flex items-center group">
+        <Image
+          src={logo}
+          alt="CMDX Logo"
+          class="h-10 w-auto transform group-hover:scale-105 transition-transform"
+          loading="eager"
+        />
       </a>
 
       <!-- Desktop Navigation -->

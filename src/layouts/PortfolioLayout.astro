@@ -98,42 +98,15 @@ const formattedProjectDate = projectDate?.toLocaleDateString('pl-PL', {
         )}
       </div>
 
-      {coverImage && coverImageAlt && (
-        <div class="cover-image">
-          <Image
-            src={coverImage}
-            alt={coverImageAlt}
-            loading="eager"
-            quality={95}
-          />
-        </div>
-      )}
+      
     </header>
 
     <div class="project-content">
       <slot />
     </div>
 
-    {gallery.length > 0 && (
-      <section class="gallery">
-        <h2>Galeria</h2>
-        <div class="gallery-grid">
-          {gallery.map((item) => (
-            <figure class="gallery-item">
-              <Image
-                src={item.src}
-                alt={item.alt}
-                loading="lazy"
-                quality={90}
-              />
-              {item.caption && (
-                <figcaption>{item.caption}</figcaption>
-              )}
-            </figure>
-          ))}
-        </div>
-      </section>
-    )}
+    
+ 
 
     {tags.length > 0 && (
       <footer class="project-footer">
@@ -196,11 +169,8 @@ const formattedProjectDate = projectDate?.toLocaleDateString('pl-PL', {
     display: flex;
     flex-wrap: wrap;
     gap: 2rem;
-    margin-bottom: 3rem;
-    padding: 2rem;
-    background: white;
-    border-radius: 50px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+
+
   }
 
   .meta-item {
