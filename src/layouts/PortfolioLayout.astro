@@ -52,6 +52,240 @@ const formattedProjectDate = projectDate?.toLocaleDateString('pl-PL', {
   year: 'numeric',
   month: 'long',
 });
+
+// Generowanie szczegółowego schema.org
+const currentUrl = Astro.url.href;
+const siteUrl = Astro.site?.toString() || 'https://cmdx.pl';
+
+// Pełny URL do obrazu
+const imageUrl = ogImage
+  ? (ogImage.startsWith('http') ? ogImage : `${siteUrl}${ogImage}`)
+  : coverImage
+    ? `${siteUrl}${coverImage.src}`
+    : `${siteUrl}/og-image.jpg`;
+
+// Szczegółowe schema dla projektu portfolio
+const portfolioSchema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    // 1. CreativeWork - główny typ dla projektu kreatywnego
+    {
+      "@type": "CreativeWork",
+      "@id": `${currentUrl}#creativework`,
+      "name": title,
+      "headline": title,
+      "description": description,
+      "image": {
+        "@type": "ImageObject",
+        "url": imageUrl,
+        "width": 1200,
+        "height": 630
+      },
+      "creator": {
+        "@type": "Organization",
+        "@id": `${siteUrl}#organization`,
+        "name": "CMDX",
+        "url": siteUrl,
+        "logo": {
+          "@type": "ImageObject",
+          "url": `${siteUrl}/logo.png`
+        }
+      },
+      "dateCreated": projectDate?.toISOString() || publishDate.toISOString(),
+      "datePublished": publishDate.toISOString(),
+      "inLanguage": "pl-PL",
+      "keywords": keywords.join(', '),
+      "about": {
+        "@type": "Thing",
+        "name": category || "Design & Branding"
+      },
+      "workExample": gallery.map((item, index) => ({
+        "@type": "ImageObject",
+        "@id": `${currentUrl}#image-${index}`,
+        "url": `${siteUrl}${item.src.src}`,
+        "name": item.alt,
+        "description": item.caption || item.alt,
+        "contentUrl": `${siteUrl}${item.src.src}`,
+        "encodingFormat": "image/jpeg"
+      })),
+      "audience": {
+        "@type": "Audience",
+        "audienceType": "Business professionals, Marketing teams, Property developers"
+      }
+    },
+    // 2. Article - dla lepszego indeksowania jako artykuł portfolio
+    {
+      "@type": "Article",
+      "@id": `${currentUrl}#article`,
+      "headline": title,
+      "description": description,
+      "image": imageUrl,
+      "datePublished": publishDate.toISOString(),
+      "dateModified": publishDate.toISOString(),
+      "author": {
+        "@type": "Organization",
+        "@id": `${siteUrl}#organization`
+      },
+      "publisher": {
+        "@type": "Organization",
+        "@id": `${siteUrl}#organization`
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": currentUrl
+      },
+      "articleSection": category || "Portfolio",
+      "keywords": keywords.join(', '),
+      "inLanguage": "pl-PL"
+    },
+    // 3. Service - usługa brandingowa/projektowa
+    {
+      "@type": "Service",
+      "@id": `${currentUrl}#service`,
+      "serviceType": category || "Branding & Visual Identity Design",
+      "name": title,
+      "description": description,
+      "provider": {
+        "@type": "Organization",
+        "@id": `${siteUrl}#organization`
+      },
+      "offers": {
+        "@type": "Offer",
+        "availability": "https://schema.org/InStock",
+        "priceSpecification": {
+          "@type": "PriceSpecification",
+          "priceCurrency": "PLN"
+        }
+      },
+      "areaServed": {
+        "@type": "Country",
+        "name": "Poland"
+      },
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "Design Services",
+        "itemListElement": tags.map((tag, index) => ({
+          "@type": "Offer",
+          "position": index + 1,
+          "itemOffered": {
+            "@type": "Service",
+            "name": tag,
+            "serviceType": tag
+          }
+        }))
+      }
+    },
+    // 4. Product - dla projektów jako produkt końcowy
+    {
+      "@type": "Product",
+      "@id": `${currentUrl}#product`,
+      "name": title,
+      "description": description,
+      "image": imageUrl,
+      "brand": {
+        "@type": "Brand",
+        "name": client || "CMDX"
+      },
+      "category": category || "Design Services",
+      "offers": {
+        "@type": "Offer",
+        "availability": "https://schema.org/InStock",
+        "seller": {
+          "@type": "Organization",
+          "@id": `${siteUrl}#organization`
+        }
+      }
+    },
+    // 5. BreadcrumbList - ścieżka nawigacji
+    {
+      "@type": "BreadcrumbList",
+      "@id": `${currentUrl}#breadcrumb`,
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Strona główna",
+          "item": siteUrl
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Portfolio",
+          "item": `${siteUrl}/portfolio`
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": title,
+          "item": currentUrl
+        }
+      ]
+    },
+    // 6. WebPage - strona projektu
+    {
+      "@type": "WebPage",
+      "@id": currentUrl,
+      "url": currentUrl,
+      "name": title,
+      "description": description,
+      "isPartOf": {
+        "@type": "WebSite",
+        "@id": `${siteUrl}#website`,
+        "url": siteUrl,
+        "name": "CMDX - Digital Design & Development"
+      },
+      "primaryImageOfPage": {
+        "@type": "ImageObject",
+        "@id": `${currentUrl}#primaryimage`,
+        "url": imageUrl
+      },
+      "datePublished": publishDate.toISOString(),
+      "dateModified": publishDate.toISOString(),
+      "inLanguage": "pl-PL",
+      "potentialAction": {
+        "@type": "ReadAction",
+        "target": [currentUrl]
+      }
+    },
+    // 7. ImageGallery - galeria obrazów
+    {
+      "@type": "ImageGallery",
+      "@id": `${currentUrl}#gallery`,
+      "name": `${title} - Galeria`,
+      "description": `Galeria wizualizacji projektu ${title}`,
+      "image": [imageUrl, ...gallery.map(item => `${siteUrl}${item.src.src}`)],
+      "author": {
+        "@type": "Organization",
+        "@id": `${siteUrl}#organization`
+      }
+    },
+    // 8. Organization - firma CMDX
+    {
+      "@type": "Organization",
+      "@id": `${siteUrl}#organization`,
+      "name": "CMDX",
+      "alternateName": "CMDX Design Studio",
+      "url": siteUrl,
+      "logo": {
+        "@type": "ImageObject",
+        "url": `${siteUrl}/logo.png`,
+        "width": 250,
+        "height": 60
+      },
+      "description": "Studio projektowe specjalizujące się w brandingu, identyfikacji wizualnej i web developmencie",
+      "address": {
+        "@type": "PostalAddress",
+        "addressCountry": "PL"
+      },
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "contactType": "customer service",
+        "availableLanguage": ["Polish", "English"]
+      },
+      "sameAs": []
+    }
+  ]
+};
 ---
 
 <SEOLayout
@@ -65,6 +299,9 @@ const formattedProjectDate = projectDate?.toLocaleDateString('pl-PL', {
   author={author}
   publishDate={publishDate}
 >
+  <!-- Szczegółowe Schema.org JSON-LD -->
+  <script type="application/ld+json" is:inline set:html={JSON.stringify(portfolioSchema)} />
+
   <Nav />
 
   <article class="portfolio-item">
