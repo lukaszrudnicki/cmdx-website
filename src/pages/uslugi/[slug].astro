@@ -1,0 +1,107 @@
+---
+import { getCollection } from 'astro:content';
+import SEOLayout from '../../layouts/SEOLayout.astro';
+
+export async function getStaticPaths() {
+  const pages = await getCollection('pages', ({ id }) => {
+    return id.startsWith('uslugi/');
+  });
+
+  return pages.map((page) => {
+    // Usuń prefix 'uslugi/' ze slug
+    const slug = page.slug.replace('uslugi/', '');
+
+    return {
+      params: { slug },
+      props: { page },
+    };
+  });
+}
+
+const { page } = Astro.props;
+const { Content } = await page.render();
+---
+
+<SEOLayout
+  title={page.data.title}
+  description={page.data.description}
+  keywords={page.data.keywords}
+  ogImage={page.data.ogImage}
+  canonical={page.data.canonical}
+  noindex={page.data.noindex}
+  nofollow={page.data.nofollow}
+  author={page.data.author}
+  publishDate={page.data.publishDate}
+>
+  <article class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <header class="mb-8 pb-8 border-b-2 border-[#E5E5E7]">
+      <h1 class="text-4xl md:text-5xl font-bold text-[#1D1D1F] mb-4">{page.data.title}</h1>
+      {page.data.publishDate && (
+        <time
+          datetime={page.data.publishDate.toISOString()}
+          class="block text-[#86868B] text-sm"
+        >
+          {page.data.publishDate.toLocaleDateString('pl-PL', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+          })}
+        </time>
+      )}
+    </header>
+
+    <div class="prose prose-lg max-w-none">
+      <Content />
+    </div>
+  </article>
+</SEOLayout>
+
+<style>
+  article :global(h2) {
+    @apply text-3xl font-bold text-[#1D1D1F] mt-12 mb-6;
+  }
+
+  article :global(h3) {
+    @apply text-2xl font-semibold text-[#1D1D1F] mt-8 mb-4;
+  }
+
+  article :global(p) {
+    @apply text-[#1D1D1F] leading-relaxed mb-6;
+  }
+
+  article :global(strong) {
+    @apply font-semibold text-[#1D1D1F];
+  }
+
+  article :global(ul) {
+    @apply list-disc pl-6 mb-6 space-y-2;
+  }
+
+  article :global(ol) {
+    @apply list-decimal pl-6 mb-6 space-y-2;
+  }
+
+  article :global(li) {
+    @apply text-[#1D1D1F] leading-relaxed;
+  }
+
+  article :global(a) {
+    @apply text-[#0066CC] hover:underline;
+  }
+
+  article :global(blockquote) {
+    @apply border-l-4 border-[#0066CC] pl-4 italic my-6;
+  }
+
+  article :global(code) {
+    @apply bg-[#F5F5F7] px-2 py-1 rounded text-sm font-mono;
+  }
+
+  article :global(pre) {
+    @apply bg-[#1D1D1F] text-white p-4 rounded-lg overflow-x-auto mb-6;
+  }
+
+  article :global(pre code) {
+    @apply bg-transparent p-0;
+  }
+</style>

@@ -3,7 +3,10 @@ import { getCollection } from 'astro:content';
 import SEOLayout from '../layouts/SEOLayout.astro';
 
 export async function getStaticPaths() {
-  const pages = await getCollection('pages');
+  // Pobierz tylko strony z głównego poziomu (bez usług)
+  const pages = await getCollection('pages', ({ id }) => {
+    return !id.startsWith('uslugi/');
+  });
 
   return pages.map((page) => ({
     params: { slug: page.slug },
