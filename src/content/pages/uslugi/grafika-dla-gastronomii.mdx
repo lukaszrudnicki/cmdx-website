@@ -27,8 +27,7 @@ author: "CMDX Design Team"
 canonical: "https://cmdx.pl/uslugi/grafika-dla-gastronomii"
 ---
 
-<script type="application/ld+json">
-{
+export const serviceSchema = {
   "@context": "https://schema.org",
   "@type": "Service",
   "serviceType": "Projektowanie Menu i Grafiki dla Restauracji",
@@ -85,8 +84,9 @@ canonical: "https://cmdx.pl/uslugi/grafika-dla-gastronomii"
     "ratingValue": "5",
     "reviewCount": "47"
   }
-}
-</script>
+};
+
+<script type="application/ld+json" dangerouslySetInnerHTML={{__html: JSON.stringify(serviceSchema)}} />
 
 # Projektowanie Menu i Grafiki dla Restauracji
 

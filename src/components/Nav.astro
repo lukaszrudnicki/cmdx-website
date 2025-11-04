@@ -4,6 +4,13 @@ import logo from '../assets/cmdx - logo.svg';
 
 const navLinks = [
   { href: '/', label: 'Strona główna' },
+  {
+    href: '/uslugi',
+    label: 'Usługi',
+    dropdown: [
+      { href: '/uslugi/grafika-dla-gastronomii', label: 'Grafika dla Gastronomii' },
+    ]
+  },
   { href: '/blog', label: 'Blog' },
   { href: '/portfolio', label: 'Portfolio' },
 ];
@@ -25,12 +32,37 @@ const navLinks = [
       <!-- Desktop Navigation -->
       <div class="hidden md:flex items-center space-x-8">
         {navLinks.map((link) => (
-          <a
-            href={link.href}
-            class="text-[#1D1D1F] hover:text-[#0066CC] font-medium transition-colors"
-          >
-            {link.label}
-          </a>
+          link.dropdown ? (
+            <div class="relative group">
+              <button
+                class="text-[#1D1D1F] hover:text-[#0066CC] font-medium transition-colors flex items-center gap-1"
+              >
+                {link.label}
+                <svg class="w-4 h-4 transition-transform group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                </svg>
+              </button>
+              <div class="absolute left-0 mt-2 w-64 bg-white rounded-xl shadow-lg border border-[#E5E5E7] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                <div class="py-2">
+                  {link.dropdown.map((item) => (
+                    <a
+                      href={item.href}
+                      class="block px-4 py-2 text-[#1D1D1F] hover:bg-[#F5F5F7] hover:text-[#0066CC] transition-colors"
+                    >
+                      {item.label}
+                    </a>
+                  ))}
+                </div>
+              </div>
+            </div>
+          ) : (
+            <a
+              href={link.href}
+              class="text-[#1D1D1F] hover:text-[#0066CC] font-medium transition-colors"
+            >
+              {link.label}
+            </a>
+          )
         ))}
       </div>
 
@@ -51,12 +83,35 @@ const navLinks = [
   <div id="mobile-menu" class="hidden md:hidden border-t border-[#E5E5E7] bg-white">
     <div class="px-4 py-4 space-y-3">
       {navLinks.map((link) => (
-        <a
-          href={link.href}
-          class="block px-4 py-2 text-[#1D1D1F] hover:bg-[#F5F5F7] hover:text-[#0066CC] rounded-full font-medium transition-colors"
-        >
-          {link.label}
-        </a>
+        link.dropdown ? (
+          <div>
+            <button
+              class="mobile-dropdown-toggle w-full flex items-center justify-between px-4 py-2 text-[#1D1D1F] hover:bg-[#F5F5F7] hover:text-[#0066CC] rounded-full font-medium transition-colors"
+            >
+              {link.label}
+              <svg class="w-4 h-4 mobile-dropdown-icon transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </button>
+            <div class="mobile-dropdown-content hidden pl-4 mt-2 space-y-2">
+              {link.dropdown.map((item) => (
+                <a
+                  href={item.href}
+                  class="block px-4 py-2 text-[#1D1D1F] hover:bg-[#F5F5F7] hover:text-[#0066CC] rounded-full transition-colors"
+                >
+                  {item.label}
+                </a>
+              ))}
+            </div>
+          </div>
+        ) : (
+          <a
+            href={link.href}
+            class="block px-4 py-2 text-[#1D1D1F] hover:bg-[#F5F5F7] hover:text-[#0066CC] rounded-full font-medium transition-colors"
+          >
+            {link.label}
+          </a>
+        )
       ))}
     </div>
   </div>
@@ -69,5 +124,21 @@ const navLinks = [
 
   button?.addEventListener('click', () => {
     menu?.classList.toggle('hidden');
+  });
+
+  // Mobile dropdown toggles
+  document.addEventListener('DOMContentLoaded', () => {
+    const mobileDropdownToggles = document.querySelectorAll('.mobile-dropdown-toggle');
+
+    mobileDropdownToggles.forEach((toggle) => {
+      toggle.addEventListener('click', (e) => {
+        e.preventDefault();
+        const content = toggle.nextElementSibling as HTMLElement;
+        const icon = toggle.querySelector('.mobile-dropdown-icon') as HTMLElement;
+
+        content?.classList.toggle('hidden');
+        icon?.classList.toggle('rotate-180');
+      });
+    });
   });
 </script>
