@@ -1,0 +1,74 @@
+---
+import { getCollection } from 'astro:content';
+import Card from './Card.astro';
+
+interface Props {
+  limit?: number;
+  featured?: boolean;
+  category?: string;
+  excludeSlug?: string;
+  columns?: 2 | 3 | 4;
+  class?: string;
+}
+
+const {
+  limit,
+  featured,
+  category,
+  excludeSlug,
+  columns = 3,
+  class: className = ''
+} = Astro.props;
+
+// Pobierz wszystkie wpisy portfolio
+let portfolioEntries = await getCollection('portfolio');
+
+// Sortuj po dacie publikacji (najnowsze najpierw)
+portfolioEntries = portfolioEntries.sort((a, b) =>
+  b.data.publishDate.getTime() - a.data.publishDate.getTime()
+);
+
+// Filtruj według featured
+if (featured !== undefined) {
+  portfolioEntries = portfolioEntries.filter(entry => entry.data.featured === featured);
+}
+
+// Filtruj według kategorii
+if (category) {
+  portfolioEntries = portfolioEntries.filter(entry => entry.data.category === category);
+}
+
+// Wyklucz określony wpis (przydatne na stronie szczegółów projektu)
+if (excludeSlug) {
+  portfolioEntries = portfolioEntries.filter(entry => entry.slug !== excludeSlug);
+}
+
+// Ogranicz liczbę wyników
+if (limit) {
+  portfolioEntries = portfolioEntries.slice(0, limit);
+}
+
+// Definiuj klasy grid w zależności od liczby kolumn
+const gridClasses = {
+  2: 'grid-cols-1 md:grid-cols-2',
+  3: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3',
+  4: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-4'
+};
+---
+
+{portfolioEntries.length > 0 ? (
+  <div class={`grid ${gridClasses[columns]} gap-8 ${className}`}>
+    {portfolioEntries.map((entry) => (
+      <Card
+        href={`/portfolio/${entry.slug}`}
+        title={entry.data.title}
+        image={entry.data.coverImage}
+        imageAlt={entry.data.coverImageAlt || entry.data.title}
+      />
+    ))}
+  </div>
+) : (
+  <div class="text-center py-12 text-gray-500">
+    <p>Brak projektów do wyświetlenia.</p>
+  </div>
+)}
