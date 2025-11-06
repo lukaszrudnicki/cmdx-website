@@ -13,13 +13,50 @@ const blogPosts = await getCollection('blog', ({ data }) => {
 const sortedPosts = blogPosts.sort((a, b) => {
   return b.data.publishDate.getTime() - a.data.publishDate.getTime();
 });
+
+// Schema.org dla listy artykułów blogowych
+const siteUrl = Astro.site?.toString() || 'https://cmdx.pl';
+const currentUrl = `${siteUrl}/blog`;
+
+const blogListSchema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "CollectionPage",
+      "@id": currentUrl,
+      "url": currentUrl,
+      "name": "Blog - CMDX",
+      "description": "Poznaj najnowsze artykuły, tutoriale i inspiracje dotyczące grafiki, projektowania i designu.",
+      "isPartOf": {
+        "@type": "WebSite",
+        "@id": `${siteUrl}#website`,
+        "url": siteUrl,
+        "name": "CMDX - Grafik na abonament"
+      },
+      "inLanguage": "pl-PL"
+    },
+    {
+      "@type": "ItemList",
+      "itemListElement": sortedPosts.map((post, index) => ({
+        "@type": "ListItem",
+        "position": index + 1,
+        "url": `${siteUrl}/blog/${post.slug}`,
+        "name": post.data.title
+      }))
+    }
+  ]
+};
 ---
 
 <SEOLayout
   title="Blog - CMDX"
   description="Poznaj najnowsze artykuły, tutoriale i inspiracje dotyczące grafiki, projektowania i designu."
   keywords={['blog', 'artykuły', 'design', 'grafika', 'portfolio']}
+  disableBaseSchema={true}
 >
+  <!-- Schema.org for Blog List -->
+  <script type="application/ld+json" slot="schema" set:html={JSON.stringify(blogListSchema)} />
+
   <Nav />
 
   <Section

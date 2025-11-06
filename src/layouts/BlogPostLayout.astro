@@ -47,6 +47,126 @@ const formattedUpdatedDate = updatedDate?.toLocaleDateString('pl-PL', {
   month: 'long',
   day: 'numeric',
 });
+
+// Schema.org dla artykułu blogowego
+const currentUrl = Astro.url.href;
+const siteUrl = Astro.site?.toString() || 'https://cmdx.pl';
+
+// Pełny URL do obrazu
+const imageUrl = ogImage
+  ? (ogImage.startsWith('http') ? ogImage : `${siteUrl}${ogImage}`)
+  : coverImage
+    ? `${siteUrl}${coverImage.src}`
+    : `${siteUrl}/og-blog.jpg`;
+
+// Schema dla artykułu blogowego
+const blogSchema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    // 1. BlogPosting/Article - główny artykuł
+    {
+      "@type": "BlogPosting",
+      "@id": `${currentUrl}#article`,
+      "headline": title,
+      "name": title,
+      "description": description,
+      "image": {
+        "@type": "ImageObject",
+        "url": imageUrl,
+        "width": 1200,
+        "height": 630
+      },
+      "datePublished": publishDate.toISOString(),
+      "dateModified": (updatedDate || publishDate).toISOString(),
+      "author": {
+        "@type": "Person",
+        "name": author,
+        "url": siteUrl
+      },
+      "publisher": {
+        "@type": "Organization",
+        "@id": `${siteUrl}#organization`,
+        "name": "CMDX",
+        "logo": {
+          "@type": "ImageObject",
+          "url": `${siteUrl}/logo.png`,
+          "width": 250,
+          "height": 60
+        }
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": currentUrl
+      },
+      "articleSection": category || "Design & Branding",
+      "keywords": keywords.join(', '),
+      "inLanguage": "pl-PL",
+      ...(tags.length > 0 && {
+        "about": tags.map(tag => ({
+          "@type": "Thing",
+          "name": tag
+        }))
+      })
+    },
+    // 2. BreadcrumbList - nawigacja
+    {
+      "@type": "BreadcrumbList",
+      "@id": `${currentUrl}#breadcrumb`,
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Strona główna",
+          "item": siteUrl
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Blog",
+          "item": `${siteUrl}/blog`
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": title,
+          "item": currentUrl
+        }
+      ]
+    },
+    // 3. WebPage - strona artykułu
+    {
+      "@type": "WebPage",
+      "@id": currentUrl,
+      "url": currentUrl,
+      "name": title,
+      "description": description,
+      "isPartOf": {
+        "@type": "WebSite",
+        "@id": `${siteUrl}#website`,
+        "url": siteUrl,
+        "name": "CMDX - Grafik na abonament"
+      },
+      "primaryImageOfPage": {
+        "@type": "ImageObject",
+        "url": imageUrl
+      },
+      "datePublished": publishDate.toISOString(),
+      "dateModified": (updatedDate || publishDate).toISOString(),
+      "inLanguage": "pl-PL"
+    },
+    // 4. Organization - CMDX
+    {
+      "@type": "Organization",
+      "@id": `${siteUrl}#organization`,
+      "name": "CMDX",
+      "url": siteUrl,
+      "logo": {
+        "@type": "ImageObject",
+        "url": `${siteUrl}/logo.png`
+      }
+    }
+  ]
+};
 ---
 
 <SEOLayout
@@ -59,7 +179,11 @@ const formattedUpdatedDate = updatedDate?.toLocaleDateString('pl-PL', {
   nofollow={nofollow}
   author={author}
   publishDate={publishDate}
+  disableBaseSchema={true}
 >
+  <!-- Enhanced Schema.org for Blog Post -->
+  <script type="application/ld+json" slot="schema" set:html={JSON.stringify(blogSchema)} />
+
   <article class="blog-post">
     <header class="post-header">
       <div class="breadcrumb">

@@ -11,6 +11,7 @@ interface Props {
   nofollow?: boolean;
   author?: string;
   publishDate?: Date;
+  disableBaseSchema?: boolean;
 }
 
 const {
@@ -23,6 +24,7 @@ const {
   nofollow = false,
   author = 'CMDX',
   publishDate,
+  disableBaseSchema = false,
 } = Astro.props;
 
 const canonicalURL = canonical || new URL(Astro.url.pathname, Astro.site);
@@ -82,21 +84,31 @@ const robotsContent = [
     <meta property="twitter:description" content={description} />
     <meta property="twitter:image" content={ogImageURL} />
 
+    <!-- Additional Meta Tags -->
+    <meta name="theme-color" content="#0068FF" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+
     <!-- Schema.org structured data -->
-    <script type="application/ld+json" set:html={JSON.stringify({
-      '@context': 'https://schema.org',
-      '@type': 'WebPage',
-      'name': title,
-      'description': description,
-      'url': canonicalURL.toString(),
-      'author': {
-        '@type': 'Person',
-        'name': author,
-      },
-      ...(publishDate && {
-        'datePublished': publishDate.toISOString(),
-      }),
-    })} />
+    {!disableBaseSchema && (
+      <script type="application/ld+json" set:html={JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'WebPage',
+        'name': title,
+        'description': description,
+        'url': canonicalURL.toString(),
+        'author': {
+          '@type': 'Person',
+          'name': author,
+        },
+        ...(publishDate && {
+          'datePublished': publishDate.toISOString(),
+        }),
+      })} />
+    )}
+
+    <!-- Custom Schema slot -->
+    <slot name="schema" />
 
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   </head>

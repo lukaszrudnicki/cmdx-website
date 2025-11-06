@@ -181,7 +181,6 @@ Powstały szkice z wykorzystaniem prostych, geometrycznych form. Finalna wersja 
   }
 
   /* Column spans */
-  .bento-col-3 { grid-column: span 2; }
   .bento-col-3 { grid-column: span 3; }
   .bento-col-4 { grid-column: span 4; }
   .bento-col-5 { grid-column: span 5; }
@@ -471,44 +470,80 @@ Powstały szkice z wykorzystaniem prostych, geometrycznych form. Finalna wersja 
     font-weight: 600;
   }
 
-  /* Responsive */
+  /* Responsive - improved for better mobile/tablet experience */
+  @media (max-width: 1280px) {
+    .bento-grid {
+      grid-template-columns: repeat(8, 1fr);
+      gap: 1.5rem;
+    }
+
+    .bento-col-7,
+    .bento-col-8 {
+      grid-column: span 8;
+    }
+  }
+
   @media (max-width: 1024px) {
     .bento-grid {
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(6, 1fr);
+      gap: 1.25rem;
     }
 
     .bento-col-3,
     .bento-col-4,
     .bento-col-5,
-    .bento-col-7 {
-      grid-column: span 2;
+    .bento-col-6,
+    .bento-col-7,
+    .bento-col-8 {
+      grid-column: span 6;
     }
 
-    .bento-row-4 {
+    .bento-row-3,
+    .bento-row-4,
+    .bento-row-5,
+    .bento-row-6 {
       grid-row: span 2;
+    }
+
+    .bento-item {
+      padding: 3rem;
+    }
+
+    .granatowe-tlo {
+      padding: 4rem !important;
     }
   }
 
   @media (max-width: 768px) {
     .bento-grid {
       grid-template-columns: 1fr;
-      gap: 0.75rem;
+      gap: 1rem;
     }
 
     .bento-col-3,
     .bento-col-4,
     .bento-col-5,
-    .bento-col-7 {
+    .bento-col-6,
+    .bento-col-7,
+    .bento-col-8 {
       grid-column: span 1;
     }
 
     .bento-row-2,
-    .bento-row-4 {
+    .bento-row-3,
+    .bento-row-4,
+    .bento-row-5,
+    .bento-row-6 {
       grid-row: span 1;
     }
 
     .bento-item {
-      padding: 1.5rem;
+      padding: 2rem;
+      border-radius: 24px;
+    }
+
+    .granatowe-tlo {
+      padding: 3rem !important;
     }
 
     .bento-heading {
@@ -524,16 +559,62 @@ Powstały szkice z wykorzystaniem prostych, geometrycznych form. Finalna wersja 
     }
 
     .bento-billboard-heading {
-      font-size: 3rem;
+      font-size: 2.5rem;
+    }
+
+    .bento-font-label {
+      font-size: 1.5rem;
+    }
+
+    .bento-font-name {
+      font-size: 2rem;
     }
 
     .bento-palette {
       flex-wrap: wrap;
+      gap: 0.5rem;
     }
 
     .bento-color {
-      width: 3rem;
-      height: 3rem;
+      width: calc(50% - 0.25rem);
+      height: 5rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .bento-grid {
+      gap: 0.75rem;
+      margin: 2rem 0;
+    }
+
+    .bento-item {
+      padding: 1.5rem;
+      border-radius: 20px;
+    }
+
+    .granatowe-tlo {
+      padding: 2rem !important;
+    }
+
+    .bento-heading {
+      font-size: 1.25rem;
+    }
+
+    .bento-font-label {
+      font-size: 1.25rem;
+    }
+
+    .bento-font-name {
+      font-size: 1.5rem;
+    }
+
+    .bento-palette {
+      gap: 0.5rem;
+    }
+
+    .bento-color {
+      width: calc(33.333% - 0.35rem);
+      height: 4rem;
     }
   }
 `}</style>
