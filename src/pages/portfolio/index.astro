@@ -11,13 +11,51 @@ const portfolioItems = await getCollection('portfolio');
 const sortedItems = portfolioItems.sort((a, b) => {
   return b.data.publishDate.getTime() - a.data.publishDate.getTime();
 });
+
+// Schema.org dla listy portfolio
+const siteUrl = Astro.site?.toString() || 'https://cmdx.pl';
+const currentUrl = `${siteUrl}/portfolio`;
+
+const portfolioListSchema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "CollectionPage",
+      "@id": currentUrl,
+      "url": currentUrl,
+      "name": "Portfolio - CMDX",
+      "description": "Zobacz moje najlepsze prace z zakresu grafiki, projektowania i designu. Projekty dla klientów i prace własne.",
+      "isPartOf": {
+        "@type": "WebSite",
+        "@id": `${siteUrl}#website`,
+        "url": siteUrl,
+        "name": "CMDX - Grafik na abonament"
+      },
+      "inLanguage": "pl-PL"
+    },
+    {
+      "@type": "ItemList",
+      "itemListElement": sortedItems.map((item, index) => ({
+        "@type": "ListItem",
+        "position": index + 1,
+        "url": `${siteUrl}/portfolio/${item.slug}`,
+        "name": item.data.title
+      }))
+    }
+  ]
+};
 ---
 
 <SEOLayout
   title="Portfolio - CMDX"
   description="Zobacz moje najlepsze prace z zakresu grafiki, projektowania i designu. Projekty dla klientów i prace własne."
   keywords={['portfolio', 'projekty', 'design', 'grafika', 'realizacje']}
+  ogImage="/og-portfolio.jpg"
+  disableBaseSchema={true}
 >
+  <!-- Schema.org for Portfolio List -->
+  <script type="application/ld+json" slot="schema" set:html={JSON.stringify(portfolioListSchema)} />
+
   <Nav />
 
   <Section

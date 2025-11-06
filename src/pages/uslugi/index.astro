@@ -1,0 +1,216 @@
+---
+import SEOLayout from '../../layouts/SEOLayout.astro';
+import Nav from '../../components/Nav.astro';
+import Section from '../../components/Section.astro';
+import Card from '../../components/Card.astro';
+import Footer from '../../components/Footer.astro';
+import Container from '../../components/Container.astro';
+
+// Lista usług
+const services = [
+  {
+    title: 'Grafika dla Gastronomii',
+    slug: 'grafika-dla-gastronomii',
+    description: 'Kompleksowa obsługa graficzna dla restauracji, kawiarni i food trucków. Menu, wizualizacje, materiały marketingowe.',
+    image: '/og-default.jpg',
+    featured: true
+  },
+  {
+    title: 'Branding & Identyfikacja Wizualna',
+    slug: 'branding-identyfikacja-wizualna',
+    description: 'Tworzenie spójnej identyfikacji wizualnej marki od podstaw. Logo, kolorystyka, typografia, brand book.',
+    image: '/og-default.jpg',
+    featured: true
+  },
+  {
+    title: 'Web Design & Development',
+    slug: 'web-design-development',
+    description: 'Projektowanie i rozwój nowoczesnych, responsywnych stron internetowych dostosowanych do Twoich potrzeb.',
+    image: '/og-default.jpg',
+    featured: true
+  },
+  {
+    title: 'Social Media Graphics',
+    slug: 'social-media-graphics',
+    description: 'Kreacje graficzne na potrzeby mediów społecznościowych. Posty, stories, reklamy dopasowane do Twojej marki.',
+    image: '/og-default.jpg',
+    featured: false
+  },
+  {
+    title: 'Grafik na Abonament',
+    slug: 'grafik-na-abonament',
+    description: 'Stały dostęp do grafika projektowego za miesięczną opłatę. Idealne rozwiązanie dla rosnących firm.',
+    image: '/og-default.jpg',
+    featured: false
+  }
+];
+
+// Schema.org dla strony usług
+const siteUrl = Astro.site?.toString() || 'https://cmdx.pl';
+const currentUrl = `${siteUrl}/uslugi`;
+
+const servicesSchema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "CollectionPage",
+      "@id": currentUrl,
+      "url": currentUrl,
+      "name": "Usługi - CMDX",
+      "description": "Profesjonalne usługi graficzne i designerskie. Branding, web design, grafika dla gastronomii i wiele więcej.",
+      "isPartOf": {
+        "@type": "WebSite",
+        "@id": `${siteUrl}#website`,
+        "url": siteUrl,
+        "name": "CMDX - Grafik na abonament"
+      },
+      "inLanguage": "pl-PL"
+    },
+    {
+      "@type": "ItemList",
+      "itemListElement": services.map((service, index) => ({
+        "@type": "ListItem",
+        "position": index + 1,
+        "item": {
+          "@type": "Service",
+          "name": service.title,
+          "description": service.description,
+          "url": `${siteUrl}/uslugi/${service.slug}`,
+          "provider": {
+            "@type": "Organization",
+            "@id": `${siteUrl}#organization`
+          }
+        }
+      }))
+    },
+    {
+      "@type": "ProfessionalService",
+      "@id": `${siteUrl}/uslugi#service`,
+      "name": "CMDX - Usługi Graficzne i Designerskie",
+      "description": "Profesjonalne usługi graficzne na abonament: branding, identyfikacja wizualna, design graficzny, web development",
+      "provider": {
+        "@type": "Organization",
+        "@id": `${siteUrl}#organization`,
+        "name": "CMDX"
+      },
+      "serviceType": "Graphic Design & Branding Services",
+      "areaServed": {
+        "@type": "Country",
+        "name": "Poland"
+      }
+    }
+  ]
+};
+---
+
+<SEOLayout
+  title="Usługi - CMDX | Grafika, Branding, Web Design"
+  description="Profesjonalne usługi graficzne i designerskie. Branding, web design, grafika dla gastronomii i wiele więcej. Grafik na abonament dla Twojego biznesu."
+  keywords={['usługi graficzne', 'branding', 'web design', 'grafika dla gastronomii', 'identyfikacja wizualna', 'grafik na abonament']}
+  disableBaseSchema={true}
+>
+  <!-- Schema.org for Services Page -->
+  <script type="application/ld+json" slot="schema" set:html={JSON.stringify(servicesSchema)} />
+
+  <Nav />
+
+  <!-- Hero Section -->
+  <section class="bg-gradient-to-br from-[#0068FF] to-[#FF007A] text-white py-20">
+    <Container>
+      <div class="max-w-4xl mx-auto text-center">
+        <h1 class="text-5xl md:text-6xl font-bold mb-6">
+          Profesjonalne Usługi Graficzne
+        </h1>
+        <p class="text-xl md:text-2xl opacity-90 mb-8">
+          Wzmocnij swój zespół projektantem, tak jak by był u Ciebie w biurze za ułamek kwoty jaką byś zapłacił za jego etat!
+        </p>
+      </div>
+    </Container>
+  </section>
+
+  <!-- Services Grid -->
+  <Section
+    title="Nasze Usługi"
+    subtitle="Kompleksowe rozwiązania graficzne i designerskie dla Twojego biznesu"
+    background="white"
+  >
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {services.map((service) => (
+        <Card
+          href={`/uslugi/${service.slug}`}
+          title={service.title}
+          description={service.description}
+          image={service.image}
+          imageAlt={service.title}
+        />
+      ))}
+    </div>
+  </Section>
+
+  <!-- Why Choose Us Section -->
+  <Section
+    title="Dlaczego CMDX?"
+    subtitle="Profesjonalizm, doświadczenie i pasja do designu"
+    background="gray"
+  >
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div class="bg-white p-8 rounded-2xl shadow-sm">
+        <div class="w-16 h-16 bg-gradient-to-br from-[#0068FF] to-[#FF007A] rounded-2xl flex items-center justify-center mb-6">
+          <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+          </svg>
+        </div>
+        <h3 class="text-2xl font-bold mb-4 text-[#1D1D1F]">Szybka Realizacja</h3>
+        <p class="text-[#86868B]">
+          Sprawna komunikacja i efektywny proces projektowy gwarantują terminową realizację każdego zlecenia.
+        </p>
+      </div>
+
+      <div class="bg-white p-8 rounded-2xl shadow-sm">
+        <div class="w-16 h-16 bg-gradient-to-br from-[#0068FF] to-[#FF007A] rounded-2xl flex items-center justify-center mb-6">
+          <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+        </div>
+        <h3 class="text-2xl font-bold mb-4 text-[#1D1D1F]">Najwyższa Jakość</h3>
+        <p class="text-[#86868B]">
+          Dbałość o każdy detal, nowoczesne narzędzia i pasja do perfekcji w każdym projekcie.
+        </p>
+      </div>
+
+      <div class="bg-white p-8 rounded-2xl shadow-sm">
+        <div class="w-16 h-16 bg-gradient-to-br from-[#0068FF] to-[#FF007A] rounded-2xl flex items-center justify-center mb-6">
+          <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+        </div>
+        <h3 class="text-2xl font-bold mb-4 text-[#1D1D1F]">Konkurencyjne Ceny</h3>
+        <p class="text-[#86868B]">
+          Model abonamentowy pozwala zaoszczędzić do 70% w porównaniu z zatrudnieniem grafika na etat.
+        </p>
+      </div>
+    </div>
+  </Section>
+
+  <!-- CTA Section -->
+  <section class="bg-gradient-to-br from-[#1D1D1F] to-[#0068FF] text-white py-20">
+    <Container>
+      <div class="max-w-3xl mx-auto text-center">
+        <h2 class="text-4xl md:text-5xl font-bold mb-6">
+          Gotowy na start?
+        </h2>
+        <p class="text-xl opacity-90 mb-8">
+          Skontaktuj się z nami i porozmawiajmy o Twoim projekcie. Pierwsza konsultacja jest bezpłatna!
+        </p>
+        <a
+          href="mailto:kontakt@cmdx.pl"
+          class="inline-block bg-white text-[#0068FF] px-8 py-4 rounded-full font-semibold text-lg hover:bg-opacity-90 transition-all transform hover:scale-105"
+        >
+          Skontaktuj się →
+        </a>
+      </div>
+    </Container>
+  </section>
+
+  <Footer />
+</SEOLayout>

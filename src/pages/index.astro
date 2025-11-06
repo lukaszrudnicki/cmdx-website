@@ -21,13 +21,135 @@ const featuredPortfolio = portfolioItems
   .filter(item => item.data.featured)
   .sort((a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime())
   .slice(0, 3);
+
+// Schema.org dla strony głównej
+const siteUrl = Astro.site?.toString() || 'https://cmdx.pl';
+const homeSchema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    // 1. Organization - główna firma
+    {
+      "@type": "Organization",
+      "@id": `${siteUrl}#organization`,
+      "name": "CMDX",
+      "alternateName": "CMDX Design Studio",
+      "url": siteUrl,
+      "logo": {
+        "@type": "ImageObject",
+        "url": `${siteUrl}/logo.png`,
+        "width": 250,
+        "height": 60
+      },
+      "image": `${siteUrl}/og-default.jpg`,
+      "description": "Studio projektowe specjalizujące się w brandingu, identyfikacji wizualnej i web developmencie. Grafik na abonament dla Twojego biznesu.",
+      "address": {
+        "@type": "PostalAddress",
+        "addressCountry": "PL",
+        "addressLocality": "Warszawa"
+      },
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "contactType": "customer service",
+        "email": "kontakt@cmdx.pl",
+        "availableLanguage": ["Polish", "English"]
+      },
+      "sameAs": [
+        "https://instagram.com/cmdx.design",
+        "https://behance.net/cmdx",
+        "https://dribbble.com/cmdx"
+      ]
+    },
+    // 2. WebSite - strona główna
+    {
+      "@type": "WebSite",
+      "@id": `${siteUrl}#website`,
+      "url": siteUrl,
+      "name": "CMDX - Grafik na abonament",
+      "description": "Wzmocnij swój zespół projektantem, tak jak by był u Ciebie w biurze za ułamek kwoty jaką byś zapłacił za jego etat!",
+      "publisher": {
+        "@id": `${siteUrl}#organization`
+      },
+      "inLanguage": "pl-PL"
+    },
+    // 3. ProfessionalService - usługi designerskie
+    {
+      "@type": "ProfessionalService",
+      "@id": `${siteUrl}#service`,
+      "name": "CMDX - Usługi Graficzne i Designerskie",
+      "description": "Profesjonalne usługi graficzne na abonament: branding, identyfikacja wizualna, design graficzny, web development",
+      "provider": {
+        "@id": `${siteUrl}#organization`
+      },
+      "serviceType": "Graphic Design & Branding Services",
+      "areaServed": {
+        "@type": "Country",
+        "name": "Poland"
+      },
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "Design Services",
+        "itemListElement": [
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Branding & Identyfikacja Wizualna",
+              "description": "Tworzenie spójnej identyfikacji wizualnej marki"
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Grafika dla Gastronomii",
+              "description": "Specjalistyczne usługi graficzne dla branży gastronomicznej"
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Web Design & Development",
+              "description": "Projektowanie i rozwój stron internetowych"
+            }
+          }
+        ]
+      }
+    },
+    // 4. WebPage - strona główna
+    {
+      "@type": "WebPage",
+      "@id": siteUrl,
+      "url": siteUrl,
+      "name": "CMDX - Grafik na abonament",
+      "description": "Wzmocnij swój zespół projektantem, tak jak by był u Ciebie w biurze za ułamek kwoty jaką byś zapłacił za jego etat!",
+      "isPartOf": {
+        "@id": `${siteUrl}#website`
+      },
+      "about": {
+        "@id": `${siteUrl}#organization`
+      },
+      "primaryImageOfPage": {
+        "@type": "ImageObject",
+        "url": `${siteUrl}/og-default.jpg`,
+        "width": 1200,
+        "height": 630
+      },
+      "inLanguage": "pl-PL"
+    }
+  ]
+};
 ---
 
 <SEOLayout
   title="CMDX - Grafik na abonament"
   description="Wzmocnij swój zespół projektantem, tak jak by był u Ciebie w biurze za ułamek kwoty jaką byś zapłacił za jego etat!"
-  keywords={['portfolio', 'grafika', 'design', 'blog', 'projekty']}
+  keywords={['portfolio', 'grafika', 'design', 'blog', 'projekty', 'branding', 'identyfikacja wizualna', 'grafik na abonament']}
+  disableBaseSchema={true}
 >
+  <!-- Enhanced Schema.org for Homepage -->
+  <script type="application/ld+json" slot="schema" set:html={JSON.stringify(homeSchema)} />
+
   <Nav />
 
   <Hero />

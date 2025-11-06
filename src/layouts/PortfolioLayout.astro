@@ -298,9 +298,10 @@ const portfolioSchema = {
   nofollow={nofollow}
   author={author}
   publishDate={publishDate}
+  disableBaseSchema={true}
 >
   <!-- Szczegółowe Schema.org JSON-LD -->
-  <script type="application/ld+json" is:inline set:html={JSON.stringify(portfolioSchema)} />
+  <script type="application/ld+json" slot="schema" set:html={JSON.stringify(portfolioSchema)} />
 
   <Nav />
 

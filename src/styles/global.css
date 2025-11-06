@@ -9,6 +9,34 @@
   body {
     font-family: 'Noto Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     font-display: swap;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  /* Typography improvements - max 14px for content */
+  p, li, span, a, div {
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  /* Headings with tighter spacing */
+  h1 {
+    margin-bottom: 0.75rem;
+  }
+
+  h2 {
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  h3 {
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  h4, h5, h6 {
+    margin-top: 0.75rem;
+    margin-bottom: 0.5rem;
   }
 
   /* Prevent layout shifts */
