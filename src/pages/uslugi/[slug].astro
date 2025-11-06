@@ -1,6 +1,9 @@
 ---
 import { getCollection } from 'astro:content';
 import SEOLayout from '../../layouts/SEOLayout.astro';
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+import Container from '../../components/Container.astro';
 
 export async function getStaticPaths() {
   const pages = await getCollection('pages', ({ id }) => {
@@ -20,6 +23,79 @@ export async function getStaticPaths() {
 
 const { page } = Astro.props;
 const { Content } = await page.render();
+
+// Schema.org dla strony usługi
+const siteUrl = Astro.site?.toString() || 'https://cmdx.pl';
+const currentUrl = `${siteUrl}/uslugi/${page.slug.replace('uslugi/', '')}`;
+
+const serviceSchema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Service",
+      "@id": `${currentUrl}#service`,
+      "name": page.data.title,
+      "description": page.data.description,
+      "provider": {
+        "@type": "Organization",
+        "@id": `${siteUrl}#organization`,
+        "name": "CMDX",
+        "url": siteUrl,
+        "logo": {
+          "@type": "ImageObject",
+          "url": `${siteUrl}/logo.png`
+        }
+      },
+      "serviceType": "Graphic Design Service",
+      "areaServed": {
+        "@type": "Country",
+        "name": "Poland"
+      },
+      "audience": {
+        "@type": "Audience",
+        "audienceType": "Business owners, Marketing professionals, Restaurant owners"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": `${currentUrl}#breadcrumb`,
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Strona główna",
+          "item": siteUrl
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Usługi",
+          "item": `${siteUrl}/uslugi`
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": page.data.title,
+          "item": currentUrl
+        }
+      ]
+    },
+    {
+      "@type": "WebPage",
+      "@id": currentUrl,
+      "url": currentUrl,
+      "name": page.data.title,
+      "description": page.data.description,
+      "isPartOf": {
+        "@type": "WebSite",
+        "@id": `${siteUrl}#website`,
+        "url": siteUrl,
+        "name": "CMDX - Grafik na abonament"
+      },
+      "inLanguage": "pl-PL"
+    }
+  ]
+};
 ---
 
 <SEOLayout
@@ -32,76 +108,186 @@ const { Content } = await page.render();
   nofollow={page.data.nofollow}
   author={page.data.author}
   publishDate={page.data.publishDate}
+  disableBaseSchema={true}
 >
-  <article class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-    <header class="mb-8 pb-8 border-b-2 border-[#E5E5E7]">
-      <h1 class="text-4xl md:text-5xl font-bold text-[#1D1D1F] mb-4">{page.data.title}</h1>
-      {page.data.publishDate && (
-        <time
-          datetime={page.data.publishDate.toISOString()}
-          class="block text-[#86868B] text-sm"
-        >
-          {page.data.publishDate.toLocaleDateString('pl-PL', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-          })}
-        </time>
-      )}
-    </header>
+  <!-- Schema.org for Service Page -->
+  <script type="application/ld+json" slot="schema" set:html={JSON.stringify(serviceSchema)} />
 
-    <div class="prose prose-lg max-w-none">
-      <Content />
-    </div>
+  <Nav />
+
+  <!-- Hero Section -->
+  <section class="bg-gradient-to-br from-[#0068FF] to-[#FF007A] text-white py-16">
+    <Container>
+      <div class="max-w-4xl">
+        <!-- Breadcrumbs -->
+        <nav class="text-sm mb-6 opacity-90">
+          <a href="/" class="hover:underline">Strona główna</a>
+          <span class="mx-2">/</span>
+          <a href="/uslugi" class="hover:underline">Usługi</a>
+          <span class="mx-2">/</span>
+          <span>{page.data.title}</span>
+        </nav>
+
+        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-4">
+          {page.data.title}
+        </h1>
+        <p class="text-xl md:text-2xl opacity-90">
+          {page.data.description}
+        </p>
+      </div>
+    </Container>
+  </section>
+
+  <!-- Content Section -->
+  <article class="bg-white py-12">
+    <Container>
+      <div class="max-w-4xl mx-auto prose prose-lg">
+        <Content />
+      </div>
+    </Container>
   </article>
+
+  <!-- CTA Section -->
+  <section class="bg-[#F5F5F7] py-16">
+    <Container>
+      <div class="max-w-3xl mx-auto text-center">
+        <h2 class="text-3xl md:text-4xl font-bold text-[#1D1D1F] mb-6">
+          Gotowy na start?
+        </h2>
+        <p class="text-lg text-[#86868B] mb-8">
+          Skontaktuj się z nami i porozmawiajmy o Twoim projekcie. Pierwsza konsultacja jest bezpłatna!
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <a
+            href="mailto:kontakt@cmdx.pl"
+            class="inline-block bg-[#0068FF] text-white px-8 py-4 rounded-full font-semibold hover:bg-opacity-90 transition-all transform hover:scale-105"
+          >
+            Napisz do nas →
+          </a>
+          <a
+            href="/portfolio"
+            class="inline-block bg-white text-[#0068FF] px-8 py-4 rounded-full font-semibold border-2 border-[#0068FF] hover:bg-[#0068FF] hover:text-white transition-all"
+          >
+            Zobacz Portfolio
+          </a>
+        </div>
+      </div>
+    </Container>
+  </section>
+
+  <Footer />
 </SEOLayout>
 
 <style>
-  article :global(h2) {
-    @apply text-3xl font-bold text-[#1D1D1F] mt-12 mb-6;
+  /* Custom prose styles for service pages */
+  .prose {
+    max-width: none;
   }
 
-  article :global(h3) {
-    @apply text-2xl font-semibold text-[#1D1D1F] mt-8 mb-4;
+  .prose :global(h2) {
+    font-size: 1.875rem;
+    font-weight: 700;
+    color: #1D1D1F;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
   }
 
-  article :global(p) {
-    @apply text-[#1D1D1F] leading-relaxed mb-6;
+  .prose :global(h3) {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #1D1D1F;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
   }
 
-  article :global(strong) {
-    @apply font-semibold text-[#1D1D1F];
+  .prose :global(h4) {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1D1D1F;
+    margin-top: 1.25rem;
+    margin-bottom: 0.5rem;
   }
 
-  article :global(ul) {
-    @apply list-disc pl-6 mb-6 space-y-2;
+  .prose :global(p) {
+    font-size: 14px;
+    line-height: 1.8;
+    color: #1D1D1F;
+    margin-bottom: 1rem;
   }
 
-  article :global(ol) {
-    @apply list-decimal pl-6 mb-6 space-y-2;
+  .prose :global(ul),
+  .prose :global(ol) {
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 1rem;
+    padding-left: 1.5rem;
   }
 
-  article :global(li) {
-    @apply text-[#1D1D1F] leading-relaxed;
+  .prose :global(li) {
+    margin-bottom: 0.5rem;
   }
 
-  article :global(a) {
-    @apply text-[#0066CC] hover:underline;
+  .prose :global(a) {
+    color: #0066CC;
+    text-decoration: none;
+    transition: opacity 0.2s;
   }
 
-  article :global(blockquote) {
-    @apply border-l-4 border-[#0066CC] pl-4 italic my-6;
+  .prose :global(a:hover) {
+    opacity: 0.8;
+    text-decoration: underline;
   }
 
-  article :global(code) {
-    @apply bg-[#F5F5F7] px-2 py-1 rounded text-sm font-mono;
+  .prose :global(strong) {
+    font-weight: 600;
+    color: #1D1D1F;
   }
 
-  article :global(pre) {
-    @apply bg-[#1D1D1F] text-white p-4 rounded-lg overflow-x-auto mb-6;
+  .prose :global(blockquote) {
+    border-left: 4px solid #0068FF;
+    padding-left: 1rem;
+    font-style: italic;
+    color: #666;
+    margin: 2rem 0;
   }
 
-  article :global(pre code) {
-    @apply bg-transparent p-0;
+  .prose :global(img) {
+    border-radius: 12px;
+    margin: 2rem 0;
+    width: 100%;
+    height: auto;
+  }
+
+  .prose :global(code) {
+    background: #F5F5F7;
+    padding: 0.2rem 0.4rem;
+    border-radius: 4px;
+    font-size: 13px;
+    font-family: 'Courier New', monospace;
+  }
+
+  .prose :global(pre) {
+    background: #1D1D1F;
+    color: white;
+    padding: 1rem;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin: 1.5rem 0;
+  }
+
+  .prose :global(pre code) {
+    background: transparent;
+    padding: 0;
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .prose :global(h2) {
+      font-size: 1.5rem;
+    }
+
+    .prose :global(h3) {
+      font-size: 1.25rem;
+    }
   }
 </style>
