@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import { ViewTransitions } from 'astro:transitions';
 
 interface Props {
   title: string;
@@ -102,6 +103,9 @@ const robotsContent = [
     <slot name="schema" />
 
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- View Transitions -->
+    <ViewTransitions />
   </head>
   <body class="bg-[#F5F5F7] text-[#1D1D1F]">
     <slot />
