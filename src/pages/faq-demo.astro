@@ -1,0 +1,156 @@
+---
+import SEOLayout from '../layouts/SEOLayout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import FAQ from '../components/FAQ.astro';
+
+// Dane FAQ z frontmatter
+const faqItems = [
+  {
+    question: "Jak długo trwa realizacja projektu graficznego?",
+    answer: "<p>Czas realizacji projektu zależy od jego złożoności:</p><ul><li><strong>Logo i identyfikacja wizualna:</strong> 2-4 tygodnie</li><li><strong>Projekt strony internetowej:</strong> 4-8 tygodni</li><li><strong>Materiały marketingowe:</strong> 1-2 tygodnie</li></ul><p>Dokładny harmonogram ustalamy na etapie briefu projektowego.</p>"
+  },
+  {
+    question: "Jakie są koszty współpracy?",
+    answer: "<p>Ceny są ustalane indywidualnie w zależności od zakresu projektu. Oferujemy różne pakiety:</p><ul><li>Podstawowy pakiet logo: od 2000 zł</li><li>Kompleksowa identyfikacja wizualna: od 5000 zł</li><li>Strona internetowa: od 4000 zł</li></ul><p>Skontaktuj się z nami, aby otrzymać szczegółową wycenę dostosowaną do Twoich potrzeb.</p>"
+  },
+  {
+    question: "Czy otrzymam pliki źródłowe projektu?",
+    answer: "<p><strong>Tak!</strong> Po zakończeniu projektu otrzymujesz:</p><ul><li>Wszystkie pliki źródłowe w formatach edytowalnych (AI, PSD, Figma)</li><li>Wersje eksportowe w różnych formatach (PNG, JPG, SVG, PDF)</li><li>Book brandingowy z wytycznymi użycia</li><li>Pełne prawa autorskie do projektu</li></ul>"
+  },
+  {
+    question: "Ile poprawek mogę zgłosić w trakcie projektu?",
+    answer: "<p>Standardowo oferujemy:</p><ul><li><strong>2 rundy poprawek</strong> w każdej fazie projektu (koncepcja, projekt finalny)</li><li>Drobne korekty techniczne są <strong>bezpłatne</strong></li><li>Dodatkowe rundy poprawek wyceniane są indywidualnie</li></ul><p>Staramy się maksymalnie ograniczyć liczbę iteracji poprzez dokładny brief na początku współpracy.</p>"
+  },
+  {
+    question: "Czy projektujecie również do druku?",
+    answer: "<p>Oczywiście! Przygotowujemy projekty zarówno do druku jak i do mediów cyfrowych:</p><ul><li>Wizytówki, ulotki, broszury</li><li>Plakaty i banery</li><li>Opakowania produktów</li><li>Materiały reklamowe</li></ul><p>Wszystkie projekty dostarczamy w formacie gotowym do druku z odpowiednimi spadami i CMYK.</p>"
+  },
+  {
+    question: "W jaki sposób przebiega proces projektowy?",
+    answer: "<p>Nasza współpraca składa się z kilku etapów:</p><ol><li><strong>Brief i konsultacja:</strong> Omawiamy Twoje potrzeby i oczekiwania</li><li><strong>Research i koncepcja:</strong> Analizujemy rynek i tworzymy pierwsze pomysły</li><li><strong>Prezentacja projektów:</strong> Pokazujemy 2-3 warianty koncepcji</li><li><strong>Poprawki:</strong> Dopracowujemy wybrany wariant</li><li><strong>Finalizacja:</strong> Przygotowujemy wszystkie materiały finalne</li><li><strong>Przekazanie projektu:</strong> Dostarczamy pliki i dokumentację</li></ol>"
+  }
+];
+---
+
+<SEOLayout
+  title="FAQ - Najczęściej zadawane pytania | CMDX"
+  description="Odpowiedzi na najczęściej zadawane pytania dotyczące projektowania graficznego, identyfikacji wizualnej i współpracy z CMDX."
+  keywords={["faq", "pytania", "odpowiedzi", "projektowanie graficzne", "ceny", "współpraca"]}
+>
+  <Nav />
+
+  <main>
+    <div class="hero-section">
+      <h1>Masz pytania?</h1>
+      <p>Znajdź odpowiedzi na najczęściej zadawane pytania dotyczące naszych usług</p>
+    </div>
+
+    <FAQ
+      title="Najczęściej zadawane pytania"
+      items={faqItems}
+    />
+
+    <div class="cta-section">
+      <h2>Nie znalazłeś odpowiedzi?</h2>
+      <p>Skontaktuj się z nami - chętnie odpowiemy na wszystkie Twoje pytania!</p>
+      <a href="mailto:kontakt@cmdx.pl" class="cta-button">Napisz do nas</a>
+    </div>
+  </main>
+
+  <Footer />
+</SEOLayout>
+
+<style>
+  .hero-section {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 6rem 1rem 2rem;
+    text-align: center;
+  }
+
+  .hero-section h1 {
+    font-size: 3.5rem;
+    font-weight: 700;
+    color: #1D1D1F;
+    margin-bottom: 1.5rem;
+    letter-spacing: -0.02em;
+  }
+
+  .hero-section p {
+    font-size: 1.25rem;
+    color: #86868B;
+    line-height: 1.6;
+  }
+
+  .cta-section {
+    max-width: 900px;
+    margin: 4rem auto;
+    padding: 3rem 1rem;
+    text-align: center;
+    background: linear-gradient(135deg, #0066CC 0%, #0052A3 100%);
+    border-radius: 24px;
+  }
+
+  .cta-section h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 1rem;
+  }
+
+  .cta-section p {
+    font-size: 1.125rem;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 2rem;
+  }
+
+  .cta-button {
+    display: inline-block;
+    padding: 1rem 2.5rem;
+    background: white;
+    color: #0066CC;
+    font-weight: 600;
+    font-size: 1.125rem;
+    border-radius: 50px;
+    text-decoration: none;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .cta-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  }
+
+  @media (max-width: 768px) {
+    .hero-section {
+      padding: 4rem 1rem 1rem;
+    }
+
+    .hero-section h1 {
+      font-size: 2.5rem;
+    }
+
+    .hero-section p {
+      font-size: 1.125rem;
+    }
+
+    .cta-section {
+      margin: 3rem 1rem;
+      padding: 2rem 1.5rem;
+    }
+
+    .cta-section h2 {
+      font-size: 1.75rem;
+    }
+
+    .cta-section p {
+      font-size: 1rem;
+    }
+
+    .cta-button {
+      padding: 0.875rem 2rem;
+      font-size: 1rem;
+    }
+  }
+</style>
