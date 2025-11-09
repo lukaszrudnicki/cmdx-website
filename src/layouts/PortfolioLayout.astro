@@ -367,29 +367,32 @@ const portfolioSchema = {
 
 <script>
   import gsap from 'gsap';
-  import { ScrollTrigger } from 'gsap/ScrollTrigger';
-
-  gsap.registerPlugin(ScrollTrigger);
 
   function initAnimations() {
-    // Prosta animacja fade-in dla wszystkich elementów bento
-    gsap.from('.bento-item, .bento-item-color', {
-      scrollTrigger: {
-        trigger: '.bento-grid',
-        start: 'top 80%',
-        once: true
-      },
-      opacity: 0,
-      y: 30,
-      duration: 0.6,
-      stagger: 0.1,
-      ease: 'power2.out'
-    });
+    // Najprostsza animacja fade-in bez ScrollTrigger
+    const bentoItems = document.querySelectorAll('.bento-item, .bento-item-color');
+
+    if (bentoItems.length > 0) {
+      gsap.from(bentoItems, {
+        opacity: 0,
+        y: 20,
+        duration: 0.5,
+        stagger: 0.05,
+        ease: 'power2.out',
+        clearProps: 'all' // Usuwa inline style po zakończeniu animacji
+      });
+    }
   }
 
-  // Uruchom animacje
+  // Uruchom po załadowaniu
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initAnimations);
+  } else {
+    initAnimations();
+  }
+
+  // Reinicjalizuj po View Transitions
   document.addEventListener('astro:page-load', initAnimations);
-  if (document.readyState !== 'loading') initAnimations();
 </script>
 
 <style>
