@@ -1,0 +1,61 @@
+---
+import SEOLayout from '../layouts/SEOLayout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import Button from '../components/Button.astro';
+---
+
+<SEOLayout
+  title="404 - Strona nie znaleziona | CMDX"
+  description="Przepraszamy, ale strona, której szukasz nie istnieje."
+  keywords={['404', 'nie znaleziono', 'błąd']}
+  noindex={true}
+>
+  <Nav />
+
+  <main class="min-h-screen flex items-center justify-center px-4 py-16">
+    <div class="max-w-2xl mx-auto text-center">
+      <!-- Duży numer 404 z gradientem -->
+      <div class="mb-8">
+        <h1 class="text-9xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+          404
+        </h1>
+      </div>
+
+      <!-- Tytuł -->
+      <h2 class="text-4xl md:text-5xl font-bold text-[#1D1D1F] mb-4">
+        Ups! Nie ma takiej strony
+      </h2>
+
+      <!-- Opis -->
+      <p class="text-xl text-gray-600 mb-8 max-w-md mx-auto">
+        Wygląda na to, że strona, której szukasz nie istnieje lub została przeniesiona.
+      </p>
+
+      <!-- Przyciski -->
+      <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+        <Button href="/" variant="primary" size="lg">
+          ← Wróć do strony głównej
+        </Button>
+        <Button href="/portfolio" variant="outline" size="lg">
+          Zobacz Portfolio
+        </Button>
+      </div>
+
+      <!-- Dekoracyjny element -->
+      <div class="mt-16 opacity-20">
+        <svg class="w-64 h-64 mx-auto" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="100" cy="100" r="80" stroke="url(#gradient)" stroke-width="2" stroke-dasharray="5 5"/>
+          <defs>
+            <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" style="stop-color:#9333ea"/>
+              <stop offset="100%" style="stop-color:#db2777"/>
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</SEOLayout>
