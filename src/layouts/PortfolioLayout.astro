@@ -365,6 +365,182 @@ const portfolioSchema = {
   <Footer />
 </SEOLayout>
 
+<script>
+  import gsap from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+  // Rejestracja pluginu
+  gsap.registerPlugin(ScrollTrigger);
+
+  // Funkcja inicjalizująca animacje
+  function initAnimations() {
+    // Animacja nagłówka - fade in z góry
+    gsap.from('.project-header h1', {
+      opacity: 0,
+      y: -50,
+      duration: 1,
+      ease: 'power3.out',
+      delay: 0.2
+    });
+
+    // Animacja breadcrumb
+    gsap.from('.breadcrumb', {
+      opacity: 0,
+      y: -20,
+      duration: 0.8,
+      ease: 'power2.out'
+    });
+
+    // Animacja meta informacji
+    gsap.from('.meta-item', {
+      opacity: 0,
+      y: 20,
+      duration: 0.6,
+      stagger: 0.1,
+      ease: 'power2.out',
+      delay: 0.3
+    });
+
+    // Animacja bento-grid items ze ScrollTrigger
+    const bentoItems = gsap.utils.toArray('.bento-item, .bento-item-color');
+
+    bentoItems.forEach((item: any, index: number) => {
+      // Różne efekty dla różnych typów elementów
+      const isImage = item.classList.contains('bento-image');
+      const isOrange = item.classList.contains('bento-orange');
+
+      if (isImage) {
+        // Obrazy - scale + fade
+        gsap.from(item, {
+          scrollTrigger: {
+            trigger: item,
+            start: 'top 85%',
+            end: 'top 20%',
+            toggleActions: 'play none none reverse'
+          },
+          scale: 0.9,
+          opacity: 0,
+          duration: 0.8,
+          ease: 'power2.out'
+        });
+      } else if (isOrange) {
+        // Pomarańczowy blok z logo - rotate + fade
+        gsap.from(item, {
+          scrollTrigger: {
+            trigger: item,
+            start: 'top 85%',
+            toggleActions: 'play none none reverse'
+          },
+          scale: 0.8,
+          rotation: -5,
+          opacity: 0,
+          duration: 1,
+          ease: 'back.out(1.2)'
+        });
+      } else {
+        // Standardowe bloki tekstowe - slide from left/right
+        const direction = index % 2 === 0 ? -50 : 50;
+
+        gsap.from(item, {
+          scrollTrigger: {
+            trigger: item,
+            start: 'top 85%',
+            toggleActions: 'play none none reverse'
+          },
+          x: direction,
+          opacity: 0,
+          duration: 0.8,
+          ease: 'power2.out'
+        });
+      }
+    });
+
+    // Animacja palety kolorów - każdy kolor osobno
+    gsap.from('.bento-color', {
+      scrollTrigger: {
+        trigger: '.bento-palette',
+        start: 'top 85%',
+        toggleActions: 'play none none reverse'
+      },
+      scaleY: 0,
+      opacity: 0,
+      duration: 0.6,
+      stagger: 0.1,
+      ease: 'power2.out',
+      transformOrigin: 'bottom center'
+    });
+
+    // Animacja tagów w footerze
+    gsap.from('.tag', {
+      scrollTrigger: {
+        trigger: '.tags',
+        start: 'top 90%',
+        toggleActions: 'play none none reverse'
+      },
+      scale: 0,
+      opacity: 0,
+      duration: 0.5,
+      stagger: 0.08,
+      ease: 'back.out(1.5)'
+    });
+
+    // Parallax effect dla dużych obrazów
+    const largeImages = document.querySelectorAll('.bento-row-3 .bento-img, .bento-row-4 .bento-img');
+
+    largeImages.forEach((img: any) => {
+      gsap.to(img, {
+        scrollTrigger: {
+          trigger: img,
+          start: 'top bottom',
+          end: 'bottom top',
+          scrub: 1
+        },
+        y: -50,
+        ease: 'none'
+      });
+    });
+
+    // Hover effect na bento-items (tylko desktop)
+    if (window.innerWidth > 768) {
+      bentoItems.forEach((item: any) => {
+        item.addEventListener('mouseenter', () => {
+          gsap.to(item, {
+            scale: 1.02,
+            duration: 0.3,
+            ease: 'power2.out'
+          });
+        });
+
+        item.addEventListener('mouseleave', () => {
+          gsap.to(item, {
+            scale: 1,
+            duration: 0.3,
+            ease: 'power2.out'
+          });
+        });
+      });
+    }
+  }
+
+  // Inicjalizacja po załadowaniu DOM
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initAnimations);
+  } else {
+    initAnimations();
+  }
+
+  // Reinicjalizacja po nawigacji z View Transitions
+  document.addEventListener('astro:page-load', () => {
+    ScrollTrigger.refresh();
+    initAnimations();
+  });
+
+  // Cleanup przed zmianą strony
+  document.addEventListener('astro:before-preparation', () => {
+    ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+  });
+</script>
+
 <style>
   .portfolio-item {
     max-width: 1500px;
