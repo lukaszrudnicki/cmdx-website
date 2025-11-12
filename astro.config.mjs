@@ -4,6 +4,7 @@ import sitemap from '@astrojs/sitemap';
 import mdx from '@astrojs/mdx';
 import tailwind from '@astrojs/tailwind';
 import vercel from '@astrojs/vercel';
+import partytown from '@astrojs/partytown';
 
 // https://astro.build/config
 export default defineConfig({
@@ -29,6 +30,11 @@ export default defineConfig({
   },
 
   integrations: [
+    partytown({
+      config: {
+        forward: ['dataLayer.push'],
+      },
+    }),
     tailwind({
       applyBaseStyles: false, // Don't include Tailwind's base styles to reduce CSS
     }),
